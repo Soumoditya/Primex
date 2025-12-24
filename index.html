@@ -2,64 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P R I M E • H U B</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P R I M E • X</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="glow-spot spot-1"></div>
-    <div class="glow-spot spot-2"></div>
-    <div class="glow-spot spot-3"></div>
+    <canvas id="space-canvas"></canvas>
+    <div class="vignette"></div>
+
+    <nav id="sidebar" class="glass-panel">
+        <div class="sidebar-header">
+            <h3>M E N U</h3>
+            <button onclick="toggleSidebar()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="#" onclick="goHome(); toggleSidebar()">Home</a></li>
+            <li><a href="#" onclick="openPageById('news'); toggleSidebar()">News</a></li>
+            <li><a href="#" onclick="openPageById('comedy'); toggleSidebar()">Comedy</a></li>
+            <li><a href="#" onclick="openPageById('movies'); toggleSidebar()">Movies</a></li>
+            <li><a href="#" onclick="toggleSidebar()">Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>© 2025 PRIME X</p>
+        </div>
+    </nav>
 
     <div class="app-wrapper">
         
-        <header class="glass-header">
-            <div class="logo">PRIME<span class="highlight">X</span></div>
-            <div class="profile-pill">
-                <span class="status-dot"></span> Members Only
+        <header class="top-bar">
+            <button onclick="toggleSidebar()" class="menu-trigger glass-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="brand-logo">PRIME<span class="accent">X</span></div>
+            <div class="user-avatar glass-btn">
+                <i class="fas fa-user"></i>
             </div>
         </header>
 
-        <section id="welcome" class="view active">
+        <main id="dashboard" class="view active">
             
-            <div class="hero-text">
-                <h1>Welcome to <br><span class="gradient-text">The Inner Circle</span></h1>
-                <p>Curated. Exclusive. Premium.</p>
+            <div class="hero-section">
+                <h1>Explore the <br><span class="gradient-text">Unknown</span></h1>
+                <p class="description">Your exclusive gateway to curated premium content. Swipe, search, and discover.</p>
             </div>
 
-            <div class="search-container glass-card">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="serviceSearch" placeholder="Search for access..." onkeyup="filterServices()">
-                <div class="search-glow"></div>
-                <div id="searchResults" class="search-dropdown glass-panel"></div>
+            <div class="search-box glass-panel">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search services..." onkeyup="filterServices()">
             </div>
+            <div id="searchResults" class="search-results glass-panel hidden"></div>
 
-            <div class="category-section">
-                <h3>Select Access</h3>
-                <div class="cards-scroller" id="sliderTrack">
-                    </div>
-            </div>
-
-            <div class="dock-container glass-card">
-                <a href="#" class="dock-item instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="dock-item twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="dock-item youtube"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="dock-item discord"><i class="fab fa-discord"></i></a>
-            </div>
-        </section>
-
-        <section id="dynamic-content" class="view hidden">
-            <div class="page-header">
-                <button onclick="goHome()" class="nav-btn glass-btn"><i class="fas fa-chevron-left"></i> Back</button>
-                <h2 id="page-title">Page Title</h2>
+            <div class="section-header">
+                <h3>Featured Access</h3>
+                <span class="scroll-hint">Swipe ></span>
             </div>
             
-            <div id="content-grid" class="masonry-grid">
+            <div class="slider-wrapper" id="sliderTrack">
                 </div>
-        </section>
+
+            <div class="section-header">
+                <h3>Latest Drops</h3>
+            </div>
+            <div class="vertical-list">
+                <div class="list-item glass-panel">
+                    <div class="icon-box purple"><i class="fas fa-bolt"></i></div>
+                    <div class="text-box">
+                        <h4>System Update 2.0</h4>
+                        <p>New animations added.</p>
+                    </div>
+                </div>
+                <div class="list-item glass-panel">
+                    <div class="icon-box blue"><i class="fas fa-star"></i></div>
+                    <div class="text-box">
+                        <h4>VIP List Open</h4>
+                        <p>Exclusive access granted.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bottom-spacer"></div>
+        </main>
+
+        <main id="dynamic-page" class="view hidden">
+            <div class="page-nav">
+                <button onclick="goHome()" class="back-btn glass-btn"><i class="fas fa-arrow-left"></i></button>
+                <h2 id="page-title">Title</h2>
+            </div>
+            <div id="content-grid" class="content-grid">
+                </div>
+             <div class="bottom-spacer"></div>
+        </main>
+
+        <div class="dock-wrapper">
+            <div class="dock glass-panel">
+                <a href="https://instagram.com" target="_blank" class="dock-icon instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://twitter.com" target="_blank" class="dock-icon twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://youtube.com" target="_blank" class="dock-icon youtube"><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.com" target="_blank" class="dock-icon discord"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
 
     </div>
 
