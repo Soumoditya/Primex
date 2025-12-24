@@ -1,118 +1,180 @@
-// --- CONFIGURATION ---
+/* --- DATA --- */
 const services = [
-    { id: 'news', title: 'Real News', icon: 'fa-newspaper', color: '#ff0055' },
-    { id: 'comedy', title: 'Comedy Hub', icon: 'fa-masks-theater', color: '#ffd60a' },
-    { id: 'movies', title: 'Cineplex', icon: 'fa-film', color: '#7209b7' },
-    { id: 'actors', title: 'Top Talent', icon: 'fa-star', color: '#3a86ff' },
-    { id: 'girls', title: 'IG Models', icon: 'fa-heart', color: '#fb5607' },
-    { id: 'claims', title: 'Free Claims', icon: 'fa-gift', color: '#00b4d8' },
+    { id: 'news', title: 'Real News', icon: 'fa-newspaper', color: '#ff4757' },
+    { id: 'comedy', title: 'Comedy', icon: 'fa-masks-theater', color: '#ffa502' },
+    { id: 'movies', title: 'Movies', icon: 'fa-film', color: '#2ed573' },
+    { id: 'actors', title: 'Talent', icon: 'fa-star', color: '#1e90ff' },
+    { id: 'girls', title: 'Models', icon: 'fa-heart', color: '#ff6b81' },
+    { id: 'claims', title: 'Claims', icon: 'fa-gift', color: '#3742fa' },
 ];
 
-// --- CONTENT DATABASE (EDIT THIS) ---
 const db = {
     news: [
-        { title: "Tech World 2025", desc: "The rise of new AI models.", img: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=100&q=80" },
-        { title: "Global Markets", desc: "Crypto hits all time high.", img: "https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=100&q=80" }
+        {title: "AI Breakthrough", desc: "New models released today."}, 
+        {title: "Market Watch", desc: "Crypto trends for 2025."}
     ],
-    movies: [
-        { title: "Interstellar", desc: "Sci-Fi / Adventure", link: "https://netflix.com" },
-        { title: "The Batman", desc: "Action / Noir", link: "https://hbo.com" }
-    ],
-    girls: [
-        { title: "Anna Shumate", desc: "@annashumate", img: "https://via.placeholder.com/100" },
-        { title: "Kylie Jenner", desc: "@kyliejenner", img: "https://via.placeholder.com/100" }
-    ]
-    // Add more categories following the pattern...
+    // Fill other categories as needed
+    comedy: [{title: "Trending Reel", desc: "Top 10 funny clips."}]
 };
 
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    renderServices();
-});
+/* --- INITIALIZATION --- */
+window.onload = function() {
+    initCanvas();
+    renderSlider();
+};
 
-// --- RENDER SLIDER ---
-function renderServices() {
+/* --- CANVAS ANIMATION (Space/Grok Effect) --- */
+function initCanvas() {
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height, particles;
+    
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    
+    // Particle Class
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.5; // Slow movement
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.size = Math.random() * 2;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            // Bounce off edges
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
+        }
+        draw() {
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        const count = window.innerWidth < 600 ? 50 : 100; // Less particles on mobile
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Connect particles close to each other
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            
+            for (let j = i; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                
+                if (distance < 100) {
+                    ctx.strokeStyle = `rgba(255,255,255,${0.1 - distance/1000})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+    resize();
+    initParticles();
+    animate();
+}
+
+/* --- UI LOGIC --- */
+function renderSlider() {
     const track = document.getElementById('sliderTrack');
     services.forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'glass-card-btn';
-        // Dynamic Glow based on specific color
-        card.style.boxShadow = `inset 0 0 0 transparent`;
-        card.onmouseover = function() { this.style.boxShadow = `0 10px 30px -10px ${s.color}`; };
-        card.onmouseout = function() { this.style.boxShadow = `none`; };
-
-        card.innerHTML = `
-            <i class="fas ${s.icon}" style="filter: drop-shadow(0 0 5px ${s.color});"></i>
+        const div = document.createElement('div');
+        div.className = 'service-card';
+        // Inject color for glow
+        div.style.setProperty('--card-color', s.color);
+        div.innerHTML = `
+            <div class="glow-bg"></div>
+            <i class="fas ${s.icon}" style="color:${s.color}"></i>
             <span>${s.title}</span>
         `;
-        card.onclick = () => openPage(s);
-        track.appendChild(card);
+        div.onclick = () => openPage(s);
+        track.appendChild(div);
     });
 }
 
-// --- NAVIGATION ---
-function openPage(service) {
-    document.getElementById('welcome').style.opacity = '0';
-    setTimeout(() => {
-        document.getElementById('welcome').classList.add('hidden');
-        document.getElementById('dynamic-content').classList.remove('hidden');
-        document.getElementById('dynamic-content').style.opacity = '1';
-        
-        // Load Data
-        document.getElementById('page-title').innerText = service.title;
-        const grid = document.getElementById('content-grid');
-        grid.innerHTML = '';
-        
-        const data = db[service.id] || [];
-        if(data.length === 0) grid.innerHTML = '<p style="color:#666">Nothing here yet.</p>';
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+}
 
-        data.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'content-card glass-panel';
-            // Check if image exists, else use icon
-            const imgHTML = item.img 
-                ? `<img src="${item.img}" alt="">` 
-                : `<div style="width:60px;height:60px;background:#333;border-radius:12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-link"></i></div>`;
-            
-            div.innerHTML = `
-                ${imgHTML}
-                <div class="content-info">
-                    <h4>${item.title}</h4>
-                    <p>${item.desc}</p>
-                </div>
-                ${item.link ? `<a href="${item.link}" target="_blank" style="margin-left:auto; color:var(--accent-cyan)"><i class="fas fa-external-link-alt"></i></a>` : ''}
-            `;
-            grid.appendChild(div);
-        });
-    }, 300);
+function openPage(service) {
+    // Transition
+    document.getElementById('dashboard').classList.add('hidden');
+    document.getElementById('dynamic-page').classList.remove('hidden');
+    document.getElementById('page-title').innerText = service.title;
+    
+    // Populate
+    const grid = document.getElementById('content-grid');
+    grid.innerHTML = '';
+    const data = db[service.id] || [];
+    
+    if(data.length === 0) {
+        grid.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">No active content.</div>';
+        return;
+    }
+
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'content-card';
+        div.innerHTML = `
+            <div style="width:60px; height:60px; background:#222; border-radius:10px; flex-shrink:0;"></div>
+            <div>
+                <h4 style="margin-bottom:5px;">${item.title}</h4>
+                <p style="color:#888; font-size:0.85rem;">${item.desc}</p>
+            </div>
+        `;
+        grid.appendChild(div);
+    });
+}
+
+function openPageById(id) {
+    const service = services.find(s => s.id === id);
+    if(service) openPage(service);
 }
 
 function goHome() {
-    document.getElementById('dynamic-content').style.opacity = '0';
-    setTimeout(() => {
-        document.getElementById('dynamic-content').classList.add('hidden');
-        document.getElementById('welcome').classList.remove('hidden');
-        document.getElementById('welcome').style.opacity = '1';
-    }, 300);
+    document.getElementById('dynamic-page').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
 }
 
-// --- SEARCH ---
+/* --- SEARCH --- */
 function filterServices() {
-    const input = document.getElementById('serviceSearch').value.toLowerCase();
-    const resultBox = document.getElementById('searchResults');
-    resultBox.innerHTML = '';
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const results = document.getElementById('searchResults');
     
-    if(!input) { resultBox.style.display = 'none'; return; }
-
-    const found = services.filter(s => s.title.toLowerCase().includes(input));
-    if(found.length > 0) {
-        resultBox.style.display = 'block';
-        found.forEach(s => {
-            const div = document.createElement('div');
-            div.className = 'search-item';
-            div.innerHTML = `<i class="fas ${s.icon}"></i> ${s.title}`;
-            div.onclick = () => { openPage(s); resultBox.style.display = 'none'; };
-            resultBox.appendChild(div);
-        });
-    }
+    if(!input) { results.classList.add('hidden'); return; }
+    
+    const matches = services.filter(s => s.title.toLowerCase().includes(input));
+    results.classList.remove('hidden');
+    results.innerHTML = '';
+    
+    matches.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        div.innerText = s.title;
+        div.onclick = () => { openPage(s); results.classList.add('hidden'); };
+        results.appendChild(div);
+    });
 }
