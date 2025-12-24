@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V I P • S E R V I C E S</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav id="navbar" class="glass-panel">
+        <div class="nav-brand">LUXURY HUB</div>
+        <ul id="nav-links">
+            </ul>
+        <button onclick="toggleNav()" class="close-btn"><i class="fas fa-times"></i></button>
+    </nav>
+
+    <header>
+        <div class="brand">ELITE ACCESS</div>
+        <button onclick="toggleNav()" class="menu-btn"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <main id="app-container">
+        
+        <section id="welcome" class="page active">
+            <div class="hero-content">
+                <h1 class="gold-text">Welcome to the Inner Circle</h1>
+                <p class="subtitle">Exclusive resources for exclusive friends.</p>
+                
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="serviceSearch" placeholder="Search exclusively..." onkeyup="filterServices()">
+                    <div id="searchResults" class="search-dropdown"></div>
+                </div>
+
+                <div class="slider-container">
+                    <h3 class="section-title">Featured Access</h3>
+                    <div class="slider-track" id="sliderTrack">
+                        </div>
+                </div>
+
+                <div class="social-dock">
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="dynamic-content" class="page hidden">
+            <button onclick="goHome()" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <h1 id="page-title" class="gold-text">Page Title</h1>
+            <div id="content-grid" class="card-grid">
+                </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
